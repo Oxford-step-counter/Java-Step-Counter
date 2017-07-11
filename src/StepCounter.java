@@ -1,4 +1,4 @@
-package com.jamie.android.step_counter;
+package com.jamie.fourthYearProject.stepCounterModule;
 
 import java.util.ArrayList;
 import java.lang.Math;
@@ -21,10 +21,14 @@ public class StepCounter {
          */
         void onStepUpdate(int steps);
 
+    }
+
+    public interface OnFinishedProcessingListener {
+
         /**
          * This method will get called when the remaining data points finish processing. The owner of the object can make UI adjustments as necessary.
          */
-        void onCompletedProcessing();
+        void onFinishedProcessing();
 
     }
 
@@ -46,6 +50,8 @@ public class StepCounter {
 
     private ArrayList<OnStepUpdateListener> callbacks;
     private PostProcessStage.OnNewStepDetected newStepCallback;
+    private PostProcessStage.OnEndOfData eodCallback;
+    private OnFinishedProcessingListener finishCallback;
 
 
     /**
@@ -60,6 +66,15 @@ public class StepCounter {
             @Override
             public void incrementSteps() {
                 incSteps();
+            }
+        };
+
+        eodCallback = new PostProcessStage.OnEndOfData() {
+            @Override
+            public void EodCallback() {
+                if (finishCallback != null) {
+                    finishCallback.onFinishedProcessing();
+                }
             }
         };
 
@@ -82,12 +97,6 @@ public class StepCounter {
         peakScoreData = Collections.synchronizedList(new ArrayList<DataPoint>());
         peakData = Collections.synchronizedList(new ArrayList<DataPoint>());
 
-        preProcessStage = new PreProcessStage(rawData, ppData);
-        filterStage = new FilterStage(ppData, smoothData);
-        scoringStage = new ScoringStage(smoothData, peakScoreData);
-        detectionStage = new DetectionStage(peakScoreData, peakData);
-        postProcessStage = new PostProcessStage(peakData, newStepCallback);
-
     }
 
     /**
@@ -99,11 +108,11 @@ public class StepCounter {
             // Reset threads and stages.
             setUp();
             active = true;
-            preProcessStage.run();
-            filterStage.run();
-            scoringStage.run();
-            detectionStage.run();
-            postProcessStage.run();
+            new Thread( new PreProcessStage(rawData, ppData)).start();
+            new Thread( new FilterStage(ppData, smoothData)).start();
+            new Thread( new ScoringStage(smoothData, peakScoreData)).start();
+            new Thread( new DetectionStage(peakScoreData, peakData)).start();
+            new Thread( new PostProcessStage(peakData, newStepCallback, eodCallback)).start();
         }
     }
 
@@ -130,6 +139,11 @@ public class StepCounter {
      */
     public synchronized void addOnStepUpdateListener(OnStepUpdateListener listener) {
         callbacks.add(listener);
+    }
+
+
+    public synchronized void setOnFinishedProcessingListener(OnFinishedProcessingListener listener){
+        finishCallback = listener;
     }
 
 

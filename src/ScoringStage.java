@@ -1,4 +1,4 @@
-package com.jamie.android.step_counter;
+package com.jamie.fourthYearProject.stepCounterModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class ScoringStage implements Runnable {
     /*
         Section for parameter definitions
      */
-    private final int windowSize = 11;
+    private static final int WINDOW_SIZE = 11;
 
     public ScoringStage(List<DataPoint> input, List<DataPoint> output) {
 
@@ -55,11 +55,11 @@ public class ScoringStage implements Runnable {
 
                 window.add(dp);
 
-                if (window.size() == windowSize) {
+                if (window.size() == WINDOW_SIZE) {
 
                     // Calculate score and append to the output window.
                     float score = scorePeak(window);
-                    outputQueue.add(new DataPoint(window.get(windowSize / 2).getTime(),score));
+                    outputQueue.add(new DataPoint(window.get(WINDOW_SIZE / 2).getTime(),score));
                     // Pop out the oldest point.
                     window.remove(0);
                 }
@@ -71,7 +71,18 @@ public class ScoringStage implements Runnable {
     }
 
     private float scorePeak(ArrayList<DataPoint> data) {
-        //TODO: Implement this.
-        return 0f;
+        int midpoint = (int) data.size() / 2;
+        float diffLeft = 0f;
+        float diffRight = 0f;
+
+        for(int i = 0; i < midpoint; i++) {
+            diffLeft += data.get(midpoint).getMagnitude() - data.get(i).getMagnitude();
+        }
+
+        for (int j = midpoint + 1; j < data.size(); j++) {
+            diffRight += data.get(midpoint).getMagnitude() - data.get(j).getMagnitude();
+        }
+
+        return (diffRight + diffLeft) / (WINDOW_SIZE - 1);
     }
 }

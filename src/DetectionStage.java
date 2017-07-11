@@ -1,4 +1,4 @@
-package com.jamie.android.step_counter;
+package com.jamie.fourthYearProject.stepCounterModule;
 
 import java.util.List;
 
@@ -67,11 +67,11 @@ public class DetectionStage implements Runnable {
                         break;
                     default:
                         mean = (dp.getMagnitude() + (count - 1) * mean) / count;
-                        std = (float)Math.sqrt((count - 2) * Math.pow(std,2) / (count - 1) + Math.pow(o_mean - mean, 2) +  Math.pow(dp.getMagnitude() - mean,2) / count);
+                        std = (float)Math.sqrt(((count - 2) * Math.pow(std,2) / (count - 1)) + Math.pow(o_mean - mean, 2) +  Math.pow(dp.getMagnitude() - mean,2) / count);
                 }
 
                 // Once we have enough data points to have a reasonable mean/standard deviation, start detecting
-                if (count > 10) {
+                if (count > 15) {
                     if ((dp.getMagnitude() - mean) > std * threshold) {
                         // This is a peak
                         outputQueue.add(new DataPoint(dp.getTime(),dp.getMagnitude()));

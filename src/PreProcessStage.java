@@ -1,4 +1,4 @@
-package com.jamie.android.step_counter;
+package com.jamie.fourthYearProject.stepCounterModule;
 
 
 import java.util.ArrayList;

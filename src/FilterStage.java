@@ -1,4 +1,4 @@
-package com.jamie.android.step_counter;
+package com.jamie.fourthYearProject.stepCounterModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +15,11 @@ public class FilterStage implements Runnable {
     private ArrayList<DataPoint> window;
     private ArrayList<Float> filterCoefficients;
 
+    private final static int FILTER_LENGTH = 35;
+    private final static float FILTER_STD = 0.35f;
+
     private boolean active = false;
     private DataPoint dp; 
-
-
-    /*
-        Section for parameter definitions
-     */
-    private final int windowSize = 21;
 
     public FilterStage(List<DataPoint> input, List<DataPoint> output) {
 
@@ -30,7 +27,7 @@ public class FilterStage implements Runnable {
         outputQueue = output;
 
         window = new ArrayList<DataPoint>();
-        filterCoefficients = generateCoefficients();
+        filterCoefficients = FilterStage.generateCoefficients();
 
         dp = null;
     }
@@ -57,14 +54,14 @@ public class FilterStage implements Runnable {
 
                 window.add(dp);
 
-                if (window.size() == windowSize) {
+                if (window.size() == FILTER_LENGTH) {
 
                     float sum = 0;
-                    for (int i = 0; i < windowSize; i++) {
+                    for (int i = 0; i < FILTER_LENGTH; i++) {
                         sum += window.get(i).getMagnitude() * filterCoefficients.get(i);
                     }
 
-                    DataPoint new_dp = new DataPoint(window.get(windowSize / 2).getTime(), sum);
+                    DataPoint new_dp = new DataPoint(window.get(FILTER_LENGTH / 2).getTime(), sum);
                     outputQueue.add(new_dp);
                     window.remove(0);
                 }
@@ -75,13 +72,14 @@ public class FilterStage implements Runnable {
 
     }
 
-    private ArrayList<Float> generateCoefficients() {
+    private static ArrayList<Float> generateCoefficients() {
 
         // Create a window of the correct size.
-        ArrayList<Float> coeff = new ArrayList<Float>(windowSize);
+        ArrayList<Float> coeff = new ArrayList<Float>();
 
-        for (int i = 0; i < windowSize; i++) {
-            coeff.set(i, (float)1/windowSize);
+        for (int i = 0; i < FILTER_LENGTH; i++) {
+            float value = (float) Math.pow(Math.E, -0.5 * Math.pow((i - (FILTER_LENGTH - 1) / 2) / (FILTER_STD * (FILTER_LENGTH - 1) / 2), 2));
+            coeff.add(value);
         }
 
         return coeff;

@@ -1,4 +1,4 @@
-package com.jamie.android.step_counter;
+package com.jamie.fourthYearProject.stepCounterModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,8 @@ import java.util.List;
 public class PostProcessStage implements Runnable {
 
     private List<DataPoint> inputQueue;
-    private OnNewStepDetected callbackInterface;
+    private OnNewStepDetected newStepInterface;
+    private OnEndOfData endOfDataInterface;
 
     private DataPoint current;
     private DataPoint dp;
@@ -21,7 +22,7 @@ public class PostProcessStage implements Runnable {
         Section for parameter definitions
      */
 
-    private final int timeThreshold = 150;
+    private final int timeThreshold = 200;
 
 
 
@@ -30,10 +31,15 @@ public class PostProcessStage implements Runnable {
         void incrementSteps();
     }
 
-    public PostProcessStage(List<DataPoint> input, OnNewStepDetected callback) {
+    public interface OnEndOfData {
+        void EodCallback();
+    }
+
+    public PostProcessStage(List<DataPoint> input, OnNewStepDetected newStepCallback, OnEndOfData endOfDataCallback) {
 
         inputQueue = input;
-        callbackInterface = callback;
+        newStepInterface = newStepCallback;
+        endOfDataInterface = endOfDataCallback;
 
         active = false;
         current = null;
@@ -54,6 +60,7 @@ public class PostProcessStage implements Runnable {
 
                 if (dp.getEos()) {
                     active = false;
+                    endOfDataInterface.EodCallback();
                     continue;
                 }
 
@@ -66,7 +73,7 @@ public class PostProcessStage implements Runnable {
                     // If the time difference exceeds the threshold, we have a confirmed step
                     if ((dp.getTime() - current.getTime()) > timeThreshold) {
                         current = dp;
-                        callbackInterface.incrementSteps();
+                        newStepInterface.incrementSteps();
                     } else {
                         // Keep the point with the largest magnitude.
                         if (dp.getMagnitude() > current.getMagnitude()) {
