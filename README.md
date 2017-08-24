@@ -1,16 +1,17 @@
-Step counter app for Android
-============================
+Step counter algorithm, Java version
+====================================
 
-This is a step counter app for Android based on [this algorithm](https://github.com/4YP/Java-Step-Counter).
-The algorithm performs a peak detection on the data coming from the accelerometers.
+This is a step counter algorithm based on the Windowed Peak Detection method.
+The algorithm is implemented in Java and makes no assumption about the operating system it runs on.
 
-The app runs the algorithm and shows the results.
-It also connects to the Arduino-based ground truth device explained here and dumps all the data on a CSV file.
+## Compile
+
+This code is provided as a gradle project. To compile it, import it in Eclipse or use
+    gradle fatJar
+the compiled jar file will be placed in ./build/libs
 
 
-MIT LICENSE:
-
-Copyright (c) University of Oxford
+## License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
