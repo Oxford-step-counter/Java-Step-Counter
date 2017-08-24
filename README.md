@@ -7,7 +7,9 @@ The algorithm is implemented in Java and makes no assumption about the operating
 ## Compile
 
 This code is provided as a gradle project. To compile it, import it in Eclipse or use
+
     gradle fatJar
+
 the compiled jar file will be placed in ./build/libs
 
 
