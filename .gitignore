@@ -1,2 +1,15 @@
-build/
-step-counter-module.jar
+# gradle stuff
+/.gradle/
+/gradle/
+.gradle
+gradle-app.setting
+gradlew*
+
+# builds
+/bin/
+/build/
+
+# Eclipse stuff
+/.settings/
+.project
+.classpath
