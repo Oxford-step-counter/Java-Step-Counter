@@ -21,7 +21,7 @@ public class ScoringStage implements Runnable {
     /*
         Section for parameter definitions
      */
-    private static final int WINDOW_SIZE = 11;
+    private static final int WINDOW_SIZE = 35;
 
     public ScoringStage(List<DataPoint> input, List<DataPoint> output) {
 

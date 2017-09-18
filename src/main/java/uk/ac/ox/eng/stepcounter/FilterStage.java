@@ -15,7 +15,7 @@ public class FilterStage implements Runnable {
     private ArrayList<DataPoint> window;
     private ArrayList<Float> filterCoefficients;
 
-    private final static int FILTER_LENGTH = 35;
+    private final static int FILTER_LENGTH = 13;
     private final static float FILTER_STD = 0.35f;
 
     private boolean active = false;
