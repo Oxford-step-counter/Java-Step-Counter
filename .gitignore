@@ -13,3 +13,7 @@ gradlew*
 /.settings/
 .project
 .classpath
+
+# Android studio stuff
+.idea/
+local.properties
