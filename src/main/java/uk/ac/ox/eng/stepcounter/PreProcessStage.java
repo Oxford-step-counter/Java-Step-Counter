@@ -97,7 +97,7 @@ public class PreProcessStage implements Runnable {
     private DataPoint linearInterpolate(DataPoint dp1, DataPoint dp2, float interpTime) {
 
         float dt = dp2.getTime() - dp1.getTime();
-        float dv = dp2.getMagnitude() - dp2.getMagnitude();
+        float dv = dp2.getMagnitude() - dp1.getMagnitude();
         float mag = (dv/dt) * (interpTime - dp1.getTime()) + dp1.getMagnitude();
 
         return new DataPoint(interpTime,mag);
