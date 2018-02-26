@@ -75,7 +75,7 @@ public class PreProcessStage implements Runnable {
                     float interpTime = (float) interpolationCount * interpolationTime;
 
                     // Check if the next interpolated time is between these two points.
-                    if (time1 <= interpTime && interpTime <= time2) {
+                    if (time1 <= interpTime && interpTime < time2) {
                         DataPoint interpolated = linearInterpolate(window.get(0), window.get(1), interpTime);
                         outputQueue.add(interpolated);
                         interpolationCount += 1;
@@ -97,7 +97,7 @@ public class PreProcessStage implements Runnable {
     private DataPoint linearInterpolate(DataPoint dp1, DataPoint dp2, float interpTime) {
 
         float dt = dp2.getTime() - dp1.getTime();
-        float dv = dp2.getMagnitude() - dp2.getMagnitude();
+        float dv = dp2.getMagnitude() - dp1.getMagnitude();
         float mag = (dv/dt) * (interpTime - dp1.getTime()) + dp1.getMagnitude();
 
         return new DataPoint(interpTime,mag);
