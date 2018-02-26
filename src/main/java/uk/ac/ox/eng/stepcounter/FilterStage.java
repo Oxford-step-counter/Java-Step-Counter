@@ -17,6 +17,7 @@ public class FilterStage implements Runnable {
 
     private final static int FILTER_LENGTH = 13;
     private final static float FILTER_STD = 0.35f;
+    private float filter_sum = 0.0f;
 
     private boolean active = false;
     private DataPoint dp; 
@@ -28,6 +29,10 @@ public class FilterStage implements Runnable {
 
         window = new ArrayList<DataPoint>();
         filterCoefficients = FilterStage.generateCoefficients();
+        for (int i = 0; i < FILTER_LENGTH; i++)
+        {
+            filter_sum += filterCoefficients.get(i);
+        }
 
         dp = null;
     }
@@ -61,7 +66,7 @@ public class FilterStage implements Runnable {
                         sum += window.get(i).getMagnitude() * filterCoefficients.get(i);
                     }
 
-                    DataPoint new_dp = new DataPoint(window.get(FILTER_LENGTH / 2).getTime(), sum);
+                    DataPoint new_dp = new DataPoint(window.get(FILTER_LENGTH / 2).getTime(), sum / filter_sum);
                     outputQueue.add(new_dp);
                     window.remove(0);
                 }

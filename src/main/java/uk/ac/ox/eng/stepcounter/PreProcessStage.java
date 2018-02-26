@@ -75,7 +75,7 @@ public class PreProcessStage implements Runnable {
                     float interpTime = (float) interpolationCount * interpolationTime;
 
                     // Check if the next interpolated time is between these two points.
-                    if (time1 <= interpTime && interpTime <= time2) {
+                    if (time1 <= interpTime && interpTime < time2) {
                         DataPoint interpolated = linearInterpolate(window.get(0), window.get(1), interpTime);
                         outputQueue.add(interpolated);
                         interpolationCount += 1;
